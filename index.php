@@ -1,0 +1,1117 @@
+<?php 
+include 'koneksi.php';
+
+$sql = "SELECT * FROM article ORDER BY tanggal DESC";
+$artikels = $conn->query($sql);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Belajar Bootstrap | Muhammad Nafis Fadhil</title>
+		<link rel="icon" href="images/logo-3.png" />
+
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+		/>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+			crossorigin="anonymous"
+		/>
+
+		<style>
+			.accordion-button:not(.collapsed) {
+				background-color: red !important;
+				color: white;
+			}
+
+			#loader {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: #020024;
+				background: #ffd5db;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				z-index: 9999;
+				transition: opacity 0.5s ease-out;
+			}
+
+			.loader-content {
+				text-align: center;
+				color: red;
+			}
+
+			.spinner {
+				width: 60px;
+				height: 60px;
+				border: 4px solid rgba(255, 255, 255, 0.3);
+				border-top: 4px solid red;
+				border-radius: 50%;
+				animation: spin 1s linear infinite;
+				margin: 0 auto 20px;
+			}
+
+			@keyframes spin {
+				0% {
+					transform: rotate(0deg);
+				}
+				100% {
+					transform: rotate(360deg);
+				}
+			}
+
+			.loader-text {
+				font-size: 1.2rem;
+				font-weight: 500;
+				margin-bottom: 10px;
+			}
+
+			.loader-subtext {
+				font-size: 0.9rem;
+				opacity: 0.8;
+			}
+
+			.fade-out {
+				opacity: 0;
+			}
+
+			html {
+				scroll-behavior: smooth;
+			}
+
+			.navbar-nav .nav-link.active {
+				color: red !important;
+				font-weight: 600;
+			}
+
+			section {
+				scroll-margin-top: 80px;
+			}
+
+			/* Theme Switcher Styles */
+			.theme-toggle {
+				background: none;
+				border: 1px solid rgba(255, 255, 255, 0.3);
+				color: white;
+				padding: 8px 12px;
+				border-radius: 5px;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				margin-left: 10px;
+			}
+
+			.theme-toggle:hover {
+				background: rgba(255, 255, 255, 0.1);
+			}
+
+			/* Dark Mode Styles */
+			body.dark-mode {
+				background-color: #121212;
+				color: #e0e0e0;
+				transition: background-color 0.3s ease, color 0.3s ease;
+			}
+
+			body.dark-mode section {
+				background-color: #1e1e1e;
+				color: #e0e0e0;
+			}
+
+			body.dark-mode #home {
+				background-color: #2d1b1f !important;
+			}
+
+			body.dark-mode .card {
+				background-color: #2d2d2d;
+				border-color: #404040;
+				color: #e0e0e0;
+			}
+
+			body.dark-mode .card-body {
+				color: #e0e0e0;
+			}
+
+			body.dark-mode .card-title {
+				color: #e0e0e0;
+			}
+
+			body.dark-mode .card-text {
+				color: #b0b0b0;
+			}
+
+			body.dark-mode .text-muted {
+				color: #888 !important;
+			}
+
+			body.dark-mode .accordion-item {
+				background-color: #2d2d2d;
+				border-color: #404040;
+			}
+
+			body.dark-mode .accordion-button {
+				background-color: #2d2d2d;
+				color: #e0e0e0;
+			}
+
+			body.dark-mode .accordion-button:not(.collapsed) {
+				background-color: red !important;
+				color: white;
+			}
+
+			body.dark-mode .accordion-body {
+				background-color: #2d2d2d;
+				color: #e0e0e0;
+			}
+
+			body.dark-mode .form-control {
+				background-color: #2d2d2d;
+				border-color: #404040;
+				color: #e0e0e0;
+			}
+
+			body.dark-mode .form-control:focus {
+				background-color: #2d2d2d;
+				border-color: red;
+				color: #e0e0e0;
+			}
+
+			body.dark-mode .form-label {
+				color: #e0e0e0;
+			}
+
+			body.dark-mode .bg-light {
+				background-color: #1e1e1e !important;
+			}
+
+			body.dark-mode h1,
+			body.dark-mode h2,
+			body.dark-mode h3,
+			body.dark-mode h4,
+			body.dark-mode h5,
+			body.dark-mode h6 {
+				color: #e0e0e0;
+			}
+
+			body.dark-mode .text-primary {
+				color: #ff6b6b !important;
+			}
+
+			body.dark-mode .btn-primary {
+				background-color: red;
+				border-color: red;
+			}
+
+			body.dark-mode .btn-primary:hover {
+				background-color: #cc0000;
+				border-color: #cc0000;
+			}
+
+			#scrollToTop {
+				position: fixed;
+				bottom: 30px;
+				right: 30px;
+				width: 50px;
+				height: 50px;
+				background-color: red;
+				color: white;
+				border: none;
+				border-radius: 50%;
+				cursor: pointer;
+				display: none;
+				align-items: center;
+				justify-content: center;
+				font-size: 20px;
+				z-index: 1000;
+				transition: all 0.3s ease;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+			}
+
+			#scrollToTop:hover {
+				background-color: #cc0000;
+				transform: translateY(-3px);
+				box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+			}
+
+			#scrollToTop.show {
+				display: flex;
+			}
+
+			#tanggal {
+				font-size: 1.2rem;
+				font-weight: 500;
+				margin-bottom: 10px;
+			}
+
+			#jam {
+				font-size: 2rem;
+				font-weight: bold;
+				color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="loader">
+			<div class="loader-content">
+				<div class="spinner"></div>
+				<div class="loader-text">
+					Tunggu Sebentar, Websitemu lagi disiapin...
+				</div>
+				<div class="loader-subtext">Muhammad Nafis Fadhil</div>
+			</div>
+		</div>
+
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+			<div class="container">
+				<a class="navbar-brand" href="#">
+					<img
+						src="images/profile.jpeg"
+						alt="Profile"
+						width="30"
+						class="rounded-circle"
+					/>
+					Muhammad Nafis Fadhil
+				</a>
+				<button
+					class="navbar-toggler"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#navbarNav"
+					aria-controls="navbarNav"
+					aria-expanded="false"
+					aria-label="Toggle navigation"
+				>
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav ms-auto align-items-center">
+						<li class="nav-item">
+							<a class="nav-link active" aria-current="page" href="#home"
+								>Home</a
+							>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#about">About</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#schedule">Schedule</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#articles">Artikel</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#gallery">Galeri</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#contact">Kontak</a>
+						</li>
+						<li class="nav-item">
+							<button
+								class="theme-toggle"
+								id="themeToggle"
+								aria-label="Toggle theme"
+							>
+								<i class="bi bi-moon-fill" id="themeIcon"></i>
+							</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Hero Section -->
+		<section id="home" class="py-5" style="background-color: #ffd5db">
+			<div class="container">
+				<div class="row align-items-center">
+					<div class="col-lg-6 order-2 order-md-1">
+						<h1 class="display-4 fw-bold mb-4">
+							Create Memories, Save Memories, Everyday
+						</h1>
+						<p class="lead mb-4">
+							Mencatat semua kegiatan sehari-hari yang ada tanpa terkecuali
+						</p>
+						<div id="tanggal" class="mb-3"></div>
+						<div id="jam"></div>
+					</div>
+					<div class="col-lg-6 text-center order-1 order-md-2">
+						<img
+							src="images/banner.jpg"
+							alt="Profile"
+							class="img-fluid"
+							width="300"
+						/>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- About Section -->
+		<section id="about" class="py-5">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<h2 class="text-center">About Me</h2>
+						<p class="text-center text-muted mb-5">
+							Kenalan lebih lanjut sama Muhammad Nafis Fadhil
+						</p>
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-12">
+						<div class="accordion" id="accordionExample">
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button
+										class="accordion-button"
+										type="button"
+										data-bs-toggle="collapse"
+										data-bs-target="#collapseOne"
+										aria-expanded="true"
+										aria-controls="collapseOne"
+									>
+										Universitas Dian Nuswantoro (2024 - Now)
+									</button>
+								</h2>
+								<div
+									id="collapseOne"
+									class="accordion-collapse collapse show"
+									data-bs-parent="#accordionExample"
+								>
+									<div class="accordion-body">
+										<strong>This is the first item’s accordion body.</strong> It
+										is shown by default, until the collapse plugin adds the
+										appropriate classes that we use to style each element. These
+										classes control the overall appearance, as well as the
+										showing and hiding via CSS transitions. You can modify any
+										of this with custom CSS or overriding our default variables.
+										It’s also worth noting that just about any HTML can go
+										within the <code>.accordion-body</code>, though the
+										transition does limit overflow.
+									</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button
+										class="accordion-button collapsed"
+										type="button"
+										data-bs-toggle="collapse"
+										data-bs-target="#collapseTwo"
+										aria-expanded="false"
+										aria-controls="collapseTwo"
+									>
+										SMK Muhammadiyah Bligo (2021 - 2024)
+									</button>
+								</h2>
+								<div
+									id="collapseTwo"
+									class="accordion-collapse collapse"
+									data-bs-parent="#accordionExample"
+								>
+									<div class="accordion-body">
+										<strong>This is the second item’s accordion body.</strong>
+										It is hidden by default, until the collapse plugin adds the
+										appropriate classes that we use to style each element. These
+										classes control the overall appearance, as well as the
+										showing and hiding via CSS transitions. You can modify any
+										of this with custom CSS or overriding our default variables.
+										It’s also worth noting that just about any HTML can go
+										within the <code>.accordion-body</code>, though the
+										transition does limit overflow.
+									</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button
+										class="accordion-button collapsed"
+										type="button"
+										data-bs-toggle="collapse"
+										data-bs-target="#collapseThree"
+										aria-expanded="false"
+										aria-controls="collapseThree"
+									>
+										SMP Muhammadiyah Bligo (2018 - 2021)
+									</button>
+								</h2>
+								<div
+									id="collapseThree"
+									class="accordion-collapse collapse"
+									data-bs-parent="#accordionExample"
+								>
+									<div class="accordion-body">
+										<strong>This is the third item’s accordion body.</strong> It
+										is hidden by default, until the collapse plugin adds the
+										appropriate classes that we use to style each element. These
+										classes control the overall appearance, as well as the
+										showing and hiding via CSS transitions. You can modify any
+										of this with custom CSS or overriding our default variables.
+										It’s also worth noting that just about any HTML can go
+										within the <code>.accordion-body</code>, though the
+										transition does limit overflow.
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Schedule Section -->
+		<section id="schedule" class="py-5">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<h2 class="text-center">Schedule</h2>
+						<p class="text-center text-muted mb-5">Jadwal harian saya</p>
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="container">
+						<div class="row">
+							<div class="col-12 col-md-6">
+								<div class="container">
+									<div class="row justify-content-center">
+										<div class="col-12 col-lg-6 p-1">
+											<div class="card">
+												<div class="card-body text-center">
+													<h1>
+														<i class="bi bi-book" style="color: red;"></i>
+													</h1>
+													<h5 class="card-title">
+													Membaca
+													</h5>
+													<p class="card-text">
+														Menambah wawasan setiap pagi sebelum beraktivitas.
+													</p>
+												</div>
+											</div>
+										</div>
+										<div class="col-12 col-lg-6 p-1">
+											<div class="card">
+												<div class="card-body text-center">
+													<h1>
+														<i class="bi bi-laptop" style="color: red;"></i>
+													</h1>
+													<h5 class="card-title">
+													Menulis
+													</h5>
+													<p class="card-text">
+														Mencatat setiap pengalaman harian di jurnal pribadi.
+													</p>
+												</div>
+											</div>
+										</div>
+										<div class="col-12 col-lg-6 p-1">
+											<div class="card">
+												<div class="card-body text-center">
+													<h1>
+														<i class="bi bi-film" style="color: red;"></i>
+													</h1>
+													<h5 class="card-title">
+													Movie
+													</h5>
+													<p class="card-text">
+														Menonton film yang bagus di bioskop.
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-12 col-md-6">
+								<div class="container">
+									<div class="row justify-content-center">
+										<div class="col-12 col-lg-6 p-1">
+											<div class="card">
+												<div class="card-body text-center">
+													<h1>
+														<i class="bi bi-people" style="color: red;"></i>
+													</h1>
+													<h5 class="card-title">
+													Diskusi
+													</h5>
+													<p class="card-text">
+														Bertukar ide dengan teman dalam kelompok belajar.
+													</p>
+												</div>
+											</div>
+										</div>
+										<div class="col-12 col-lg-6 p-1">
+											<div class="card">
+												<div class="card-body text-center">
+													<h1>
+														<i class="bi bi-bicycle" style="color: red;"></i>
+													</h1>
+													<h5 class="card-title">
+													Olahraga
+													</h5>
+													<p class="card-text">
+														Menjaga kesehatan dengan bersepeda sore hari.
+													</p>
+												</div>
+											</div>
+										</div>
+										<div class="col-12 col-lg-6 p-1">
+											<div class="card">
+												<div class="card-body text-center">
+													<h1>
+														<i class="bi bi-bag" style="color: red;"></i>
+													</h1>
+													<h5 class="card-title">
+													Belanja
+													</h5>
+													<p class="card-text">
+														Membeli kebutuhan bulanan di supermarket.
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Articles Section -->
+		<section id="articles" class="py-5">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<h2 class="text-center">Artikel Terbaru</h2>
+						<p class="text-center text-muted mb-5">
+							Koleksi artikel-artikel menarik dari berbagai kegiatan dan proyek
+						</p>
+					</div>
+				</div>
+				<div class="row justify-content-center">
+					<?php while($row = $artikels->fetch_assoc()) : ?>
+					<div class="col-lg-4 col-md-6 mb-4">
+						<div class="card h-100">
+							<img
+								src="<?= $row['gambar'] ?>"
+								alt="<?= $row['judul'] ?>"
+								class="card-img-top"
+								style="height: 200px; object-fit: cover"
+							/>
+							<div class="card-body">
+								<h4 class="card-title text-primary"><?= $row['judul'] ?></h4>
+								<p class="card-text">
+									<?= $row['isi'] ?>
+								</p>
+							</div>
+							<div class="card-footer">
+								<p class="card-text text-muted text-center">
+									<?= $row['tanggal'] ?>
+								</p>
+							</div>
+						</div>
+					</div>
+					<?php endwhile; ?>
+					<!-- <div class="col-lg-4 col-md-6 mb-4">
+						<div class="card h-100">
+							<img
+								src="images/gambar7.jpg"
+								alt="Tutorial HTML Dasar"
+								class="card-img-top"
+								style="height: 200px; object-fit: cover"
+							/>
+							<div class="card-body">
+								<h4 class="card-title text-primary">Tutorial HTML Dasar</h4>
+								<p class="card-text">
+									HTML (Hypertext Markup Language) adalah bahasa markup yang
+									digunakan untuk membuat struktur halaman web.
+								</p>
+							</div>
+							<div class="card-footer">
+								<p class="card-text text-muted text-center">
+									Last updated 3 mins ago
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-6 mb-4">
+						<div class="card h-100">
+							<img
+								src="images/gambar3.jpg"
+								alt="Sejarah Internet"
+								class="card-img-top"
+								style="height: 200px; object-fit: cover"
+							/>
+							<div class="card-body">
+								<h4 class="card-title text-primary">Sejarah Internet</h4>
+								<p class="card-text">
+									Internet adalah jaringan global yang menghubungkan jutaan
+									komputer di seluruh dunia.
+								</p>
+							</div>
+							<div class="card-footer">
+								<p class="card-text text-muted text-center">
+									Last updated 3 mins ago
+								</p>
+							</div>
+						</div>
+					</div> -->
+				</div>
+			</div>
+		</section>
+
+		<!-- Gallery Section -->
+		<section id="gallery" class="py-5 bg-light">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<h2 class="text-center">Galeri Foto</h2>
+						<p class="text-center text-muted mb-5">
+							Koleksi foto-foto menarik dari berbagai kegiatan dan proyek
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div
+							id="galleryCarousel"
+							class="carousel slide"
+							data-bs-ride="carousel"
+						>
+							<div class="carousel-inner">
+								<div class="carousel-item active">
+									<div class="row">
+										<div class="col">
+											<img
+												src="images/gambar1.jpg"
+												alt="Gambar 1"
+												class="d-block w-100"
+												style="height: 300px; object-fit: cover"
+											/>
+										</div>
+									</div>
+								</div>
+								<div class="carousel-item">
+									<div class="row">
+										<div class="col">
+											<img
+												src="images/gambar2.jpg"
+												alt="Gambar 2"
+												class="d-block w-100"
+												style="height: 300px; object-fit: cover"
+											/>
+										</div>
+									</div>
+								</div>
+								<div class="carousel-item">
+									<div class="row">
+										<div class="col">
+											<img
+												src="images/gambar3.jpg"
+												alt="Gambar 3"
+												class="d-block w-100"
+												style="height: 300px; object-fit: cover"
+											/>
+										</div>
+									</div>
+								</div>
+								<div class="carousel-item">
+									<div class="row">
+										<div class="col">
+											<img
+												src="images/gambar4.jpg"
+												alt="Gambar 4"
+												class="d-block w-100"
+												style="height: 300px; object-fit: cover"
+											/>
+										</div>
+									</div>
+								</div>
+								<div class="carousel-item">
+									<div class="row">
+										<div class="col">
+											<img
+												src="images/gambar5.jpg"
+												alt="Gambar 5"
+												class="d-block w-100"
+												style="height: 300px; object-fit: cover"
+											/>
+										</div>
+									</div>
+								</div>
+								<div class="carousel-item">
+									<div class="row">
+										<div class="col">
+											<img
+												src="images/gambar6.jpg"
+												alt="Gambar 6"
+												class="d-block w-100"
+												style="height: 300px; object-fit: cover"
+											/>
+										</div>
+									</div>
+								</div>
+								<div class="carousel-item">
+									<div class="row">
+										<div class="col">
+											<img
+												src="images/gambar7.jpg"
+												alt="Gambar 7"
+												class="d-block w-100"
+												style="height: 300px; object-fit: cover"
+											/>
+										</div>
+									</div>
+								</div>
+								<div class="carousel-item">
+									<div class="row">
+										<div class="col">
+											<img
+												src="images/gambar8.jpg"
+												alt="Gambar 8"
+												class="d-block w-100"
+												style="height: 300px; object-fit: cover"
+											/>
+										</div>
+									</div>
+								</div>
+								<div class="carousel-item">
+									<div class="row">
+										<div class="col">
+											<img
+												src="images/gambar9.jpg"
+												alt="Gambar 9"
+												class="d-block w-100"
+												style="height: 300px; object-fit: cover"
+											/>
+										</div>
+									</div>
+								</div>
+							</div>
+							<button
+								class="carousel-control-prev"
+								type="button"
+								data-bs-target="#galleryCarousel"
+								data-bs-slide="prev"
+							>
+								<span
+									class="carousel-control-prev-icon"
+									aria-hidden="true"
+								></span>
+								<span class="visually-hidden">Previous</span>
+							</button>
+							<button
+								class="carousel-control-next"
+								type="button"
+								data-bs-target="#galleryCarousel"
+								data-bs-slide="next"
+							>
+								<span
+									class="carousel-control-next-icon"
+									aria-hidden="true"
+								></span>
+								<span class="visually-hidden">Next</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="contact" class="py-5">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<h2 class="text-center">Hubungi Saya</h2>
+						<p class="text-center text-muted mb-5">
+							Mari berdiskusi tentang proyek atau kolaborasi
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 mb-4">
+						<div class="card">
+							<div class="card-body">
+								<h4 class="card-title mb-4">Kirim Pesan</h4>
+								<form>
+									<div class="row">
+										<div class="col-md-6 mb-3">
+											<label for="firstName" class="form-label"
+												>Nama Depan</label
+											>
+											<input
+												type="text"
+												class="form-control"
+												id="firstName"
+												placeholder="Masukkan nama depan Anda"
+												required
+											/>
+										</div>
+										<div class="col-md-6 mb-3">
+											<label for="lastName" class="form-label"
+												>Nama Belakang</label
+											>
+											<input
+												type="text"
+												class="form-control"
+												id="lastName"
+												placeholder="Masukkan nama belakang Anda"
+												required
+											/>
+										</div>
+									</div>
+									<div class="mb-3">
+										<label for="email" class="form-label">Email</label>
+										<input
+											type="email"
+											class="form-control"
+											id="email"
+											placeholder="contoh@email.com"
+											required
+										/>
+									</div>
+									<div class="mb-3">
+										<label for="subject" class="form-label">Subjek</label>
+										<input
+											type="text"
+											class="form-control"
+											id="subject"
+											placeholder="Masukkan subjek pesan Anda"
+											required
+										/>
+									</div>
+									<div class="mb-3">
+										<label for="message" class="form-label">Pesan</label>
+										<textarea
+											class="form-control"
+											id="message"
+											rows="5"
+											placeholder="Tuliskan pesan Anda di sini..."
+											required
+										></textarea>
+									</div>
+									<button type="submit" class="btn btn-primary">
+										Kirim Pesan
+									</button>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4">
+						<div class="card">
+							<div class="card-body">
+								<h4 class="card-title mb-4">Informasi Kontak</h4>
+								<div class="mb-3">
+									<i class="bi bi-envelope-fill text-primary me-2"></i>
+									<a
+										href="mailto:nafisfadhil28@gmail.com"
+										class="text-decoration-none"
+										>nafisfadhil28@gmail.com</a
+									>
+								</div>
+								<div class="mb-3">
+									<i class="bi bi-phone-fill text-primary me-2"></i>
+									<a href="tel:+628970573070" class="text-decoration-none"
+										>+62 897-0573-070</a
+									>
+								</div>
+								<div class="mb-3">
+									<i class="bi bi-geo-alt-fill text-primary me-2"></i>
+									<a
+										href="https://maps.google.com/?q=Semarang,Jawa+Tengah"
+										target="_blank"
+										class="text-decoration-none"
+										>Semarang, Jawa Tengah</a
+									>
+								</div>
+								<div class="mb-3">
+									<i class="bi bi-linkedin text-primary me-2"></i>
+									<a
+										href="https://linkedin.com/in/nafisfadhil"
+										target="_blank"
+										class="text-decoration-none"
+										>Muhammad Nafis Fadhil</a
+									>
+								</div>
+								<div class="mb-3">
+									<i class="bi bi-github text-primary me-2"></i>
+									<a
+										href="https://github.com/nafisfadhil"
+										target="_blank"
+										class="text-decoration-none"
+										>Nafis Fadhil</a
+									>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<footer class="bg-dark text-white text-center py-3 mt-5">
+			<div class="container">
+				<p class="mb-0">&copy; 2025 Nafis Fadhil | Pemrograman Berbasis Web</p>
+			</div>
+		</footer>
+
+		<!-- Scroll to Top Button -->
+		<button id="scrollToTop" aria-label="Scroll to top">
+			<i class="bi bi-arrow-up"></i>
+		</button>
+
+		<script
+			src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+			integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+			crossorigin="anonymous"
+		></script>
+
+		<script>
+			function initTheme() {
+				const savedTheme = localStorage.getItem("theme") || "light";
+				const body = document.body;
+				const themeIcon = document.getElementById("themeIcon");
+
+				if (savedTheme === "dark") {
+					body.classList.add("dark-mode");
+					themeIcon.classList.remove("bi-moon-fill");
+					themeIcon.classList.add("bi-sun-fill");
+				} else {
+					body.classList.remove("dark-mode");
+					themeIcon.classList.remove("bi-sun-fill");
+					themeIcon.classList.add("bi-moon-fill");
+				}
+			}
+
+			function toggleTheme() {
+				const body = document.body;
+				const themeIcon = document.getElementById("themeIcon");
+				const isDarkMode = body.classList.contains("dark-mode");
+
+				if (isDarkMode) {
+					body.classList.remove("dark-mode");
+					themeIcon.classList.remove("bi-sun-fill");
+					themeIcon.classList.add("bi-moon-fill");
+					localStorage.setItem("theme", "light");
+				} else {
+					body.classList.add("dark-mode");
+					themeIcon.classList.remove("bi-moon-fill");
+					themeIcon.classList.add("bi-sun-fill");
+					localStorage.setItem("theme", "dark");
+				}
+			}
+
+			document.addEventListener("DOMContentLoaded", function () {
+				initTheme();
+
+				const themeToggle = document.getElementById("themeToggle");
+				if (themeToggle) {
+					themeToggle.addEventListener("click", toggleTheme);
+				}
+
+				const navLinks = document.querySelectorAll(".navbar-nav .nav-link");
+				const sections = document.querySelectorAll("section[id]");
+
+				window.addEventListener("scroll", function () {
+					let current = "";
+					sections.forEach((section) => {
+						const sectionTop = section.offsetTop;
+						const sectionHeight = section.clientHeight;
+						if (scrollY >= sectionTop - 500) {
+							current = section.getAttribute("id");
+						}
+					});
+
+					navLinks.forEach((link) => {
+						link.classList.remove("active");
+						if (link.getAttribute("href") === "#" + current) {
+							link.classList.add("active");
+						}
+					});
+				});
+
+				navLinks.forEach((link) => {
+					link.addEventListener("click", function (e) {
+						e.preventDefault();
+						const targetId = this.getAttribute("href").substring(1);
+						const targetSection = document.getElementById(targetId);
+
+						if (targetSection) {
+							targetSection.scrollIntoView({
+								behavior: "smooth",
+								block: "start",
+							});
+						}
+					});
+				});
+			});
+
+			window.addEventListener("load", function () {
+				setTimeout(function () {
+					const loader = document.getElementById("loader");
+					loader.classList.add("fade-out");
+
+					setTimeout(function () {
+						loader.style.display = "none";
+					}, 500);
+				}, 1000);
+			});
+
+			function updateDateTime() {
+				const now = new Date();
+				const tanggalEl = document.getElementById("tanggal");
+				const jamEl = document.getElementById("jam");
+
+				const options = {
+					weekday: "long",
+					year: "numeric",
+					month: "long",
+					day: "numeric",
+				};
+				const tanggal = now.toLocaleDateString("id-ID", options);
+				tanggalEl.textContent = tanggal;
+
+				const jam = now.toLocaleTimeString("id-ID", {
+					hour: "2-digit",
+					minute: "2-digit",
+					second: "2-digit",
+					hour12: false,
+				});
+				jamEl.textContent = jam;
+			}
+
+			setInterval(updateDateTime, 1000);
+			updateDateTime();
+
+			const scrollToTopBtn = document.getElementById("scrollToTop");
+
+			window.addEventListener("scroll", function () {
+				if (window.pageYOffset > 300) {
+					scrollToTopBtn.classList.add("show");
+				} else {
+					scrollToTopBtn.classList.remove("show");
+				}
+			});
+
+			scrollToTopBtn.addEventListener("click", function () {
+				window.scrollTo({
+					top: 0,
+					behavior: "smooth",
+				});
+			});
+		</script>
+	</body>
+</html>
