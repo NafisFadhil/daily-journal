@@ -284,13 +284,7 @@ if (!isset($_SESSION['username'])) {
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
 			<div class="container">
 				<a class="navbar-brand" href="#">
-					<img
-						src="images/profile.jpeg"
-						alt="Profile"
-						width="30"
-						class="rounded-circle"
-					/>
-					Muhammad Nafis Fadhil
+					My Daily Journal
 				</a>
 				<button
 					class="navbar-toggler"
@@ -316,12 +310,14 @@ if (!isset($_SESSION['username'])) {
 						<li class="nav-item">
 							<a class="nav-link" href="admin.php?page=galeri">Galeri</a>
 						</li>
-						<li class="nav-item dropdown">
+            <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-danger fw-bold" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <?= $_SESSION['username']?>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="logout.php">Logout</a></li> 
+                    <li><a class="dropdown-item" href="admin.php?page=profil"><i class="bi bi-person-circle me-2"></i>Profil</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li> 
                 </ul>
             </li>
 						<li class="nav-item">
@@ -348,7 +344,7 @@ if (!isset($_SESSION['username'])) {
                 $page = "dashboard";
             }
 
-            echo '<h4 class="lead display-6 pb-2 border-bottom border-danger-subtle">' . $page . '</h4>';
+            echo '<h4 class="lead display-6 pb-2 border-bottom border-danger-subtle">' . ucfirst($page) . '</h4>';
             include($page . ".php");
             ?>
         </div> 
