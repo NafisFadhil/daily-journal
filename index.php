@@ -3,6 +3,9 @@ include 'koneksi.php';
 
 $sql = "SELECT * FROM article ORDER BY tanggal DESC";
 $artikels = $conn->query($sql);
+
+$sql_galeri = "SELECT * FROM galeri WHERE gambar != '' ORDER BY tanggal DESC";
+$galeris = $conn->query($sql_galeri);
 ?>
 
 <!DOCTYPE html>
@@ -681,120 +684,40 @@ $artikels = $conn->query($sql);
 				</div>
 				<div class="row">
 					<div class="col-12">
+						<?php if ($galeris->num_rows > 0) : ?>
 						<div
 							id="galleryCarousel"
 							class="carousel slide"
 							data-bs-ride="carousel"
 						>
 							<div class="carousel-inner">
-								<div class="carousel-item active">
+								<?php 
+								$first = true;
+								while($row = $galeris->fetch_assoc()) : 
+									if ($row['gambar'] != '' && file_exists($row['gambar'])) :
+								?>
+								<div class="carousel-item <?= $first ? 'active' : '' ?>">
 									<div class="row">
 										<div class="col">
 											<img
-												src="images/gambar1.jpg"
-												alt="Gambar 1"
+												src="<?= $row['gambar'] ?>"
+												alt="<?= htmlspecialchars($row['deskripsi']) ?>"
 												class="d-block w-100"
 												style="height: 300px; object-fit: cover"
 											/>
+											<?php if ($row['deskripsi'] != '') : ?>
+											<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+												<p class="mb-0"><?= htmlspecialchars($row['deskripsi']) ?></p>
+											</div>
+											<?php endif; ?>
 										</div>
 									</div>
 								</div>
-								<div class="carousel-item">
-									<div class="row">
-										<div class="col">
-											<img
-												src="images/gambar2.jpg"
-												alt="Gambar 2"
-												class="d-block w-100"
-												style="height: 300px; object-fit: cover"
-											/>
-										</div>
-									</div>
-								</div>
-								<div class="carousel-item">
-									<div class="row">
-										<div class="col">
-											<img
-												src="images/gambar3.jpg"
-												alt="Gambar 3"
-												class="d-block w-100"
-												style="height: 300px; object-fit: cover"
-											/>
-										</div>
-									</div>
-								</div>
-								<div class="carousel-item">
-									<div class="row">
-										<div class="col">
-											<img
-												src="images/gambar4.jpg"
-												alt="Gambar 4"
-												class="d-block w-100"
-												style="height: 300px; object-fit: cover"
-											/>
-										</div>
-									</div>
-								</div>
-								<div class="carousel-item">
-									<div class="row">
-										<div class="col">
-											<img
-												src="images/gambar5.jpg"
-												alt="Gambar 5"
-												class="d-block w-100"
-												style="height: 300px; object-fit: cover"
-											/>
-										</div>
-									</div>
-								</div>
-								<div class="carousel-item">
-									<div class="row">
-										<div class="col">
-											<img
-												src="images/gambar6.jpg"
-												alt="Gambar 6"
-												class="d-block w-100"
-												style="height: 300px; object-fit: cover"
-											/>
-										</div>
-									</div>
-								</div>
-								<div class="carousel-item">
-									<div class="row">
-										<div class="col">
-											<img
-												src="images/gambar7.jpg"
-												alt="Gambar 7"
-												class="d-block w-100"
-												style="height: 300px; object-fit: cover"
-											/>
-										</div>
-									</div>
-								</div>
-								<div class="carousel-item">
-									<div class="row">
-										<div class="col">
-											<img
-												src="images/gambar8.jpg"
-												alt="Gambar 8"
-												class="d-block w-100"
-												style="height: 300px; object-fit: cover"
-											/>
-										</div>
-									</div>
-								</div>
-								<div class="carousel-item">
-									<div class="row">
-										<div class="col">
-											<img
-												src="images/gambar9.jpg"
-												alt="Gambar 9"
-												class="d-block w-100"
-												style="height: 300px; object-fit: cover"
-											/>
-										</div>
-									</div>
-								</div>
+								<?php 
+									$first = false;
+									endif;
+								endwhile; 
+								?>
 							</div>
 							<button
 								class="carousel-control-prev"
@@ -821,6 +744,11 @@ $artikels = $conn->query($sql);
 								<span class="visually-hidden">Next</span>
 							</button>
 						</div>
+						<?php else : ?>
+						<div class="alert alert-info text-center">
+							<p class="mb-0">Belum ada gambar galeri. Silakan tambahkan gambar melalui halaman admin.</p>
+						</div>
+						<?php endif; ?>
 					</div>
 				</div>
 			</div>
